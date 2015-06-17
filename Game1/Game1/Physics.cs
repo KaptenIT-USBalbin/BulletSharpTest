@@ -288,7 +288,7 @@ namespace BulletTest
         }
 
         #region CreateObjects
-        void Init_ClusterCar()
+        /*void Init_ClusterCar()
         {
             //SetAzi(180);
             Vector3 origin = new Vector3(100, 80, 0);
@@ -363,9 +363,9 @@ namespace BulletTest
                 wheelRR.Clusters[0].NodeDamping = 0.05f;
 
             //autocam=true;
-        }
+        }*/
 
-        SoftBody Create_ClusterBunny(Vector3 x, Vector3 a)
+        /*SoftBody Create_ClusterBunny(Vector3 x, Vector3 a)
         {
             SoftBody psb = SoftBodyHelpers.CreateFromTriMesh(SoftBodyWorldInfo, BunnyMesh.Vertices, BunnyMesh.Indices);
             Material pm = psb.AppendMaterial();
@@ -383,7 +383,7 @@ namespace BulletTest
             psb.GenerateClusters(1);
             SoftWorld.AddSoftBody(psb);
             return (psb);
-        }
+        }*/
 
         SoftBody Create_ClusterTorus(Vector3 x, Vector3 a, Vector3 s)
         {
