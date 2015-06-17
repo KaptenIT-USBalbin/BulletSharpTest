@@ -4,6 +4,7 @@ using BulletSharp;
 using BulletSharp.SoftBody;
 using BulletSharp.Serialize;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -20,11 +21,14 @@ namespace BulletTest
         public SoftRigidDynamicsWorld World;
         ConstraintSolver constraintSolver = new SequentialImpulseConstraintSolver();
 
+        public static MotorControl Motor = new MotorControl();
+        SteerControl Steer = new SteerControl(1);
 
         CollisionDispatcher Dispatcher;
         BroadphaseInterface Broadphase;
         List<CollisionShape> CollisionShapes;
         CollisionConfiguration CollisionConf;
+
 
         const int maxProxies = 32766;
 
@@ -133,14 +137,38 @@ namespace BulletTest
 
             for(int iteration = 0; iteration < 10; iteration++)
                 Create_ClusterTorus(new Vector3(0, 250 + iteration * 20, 0), new Vector3(0, 3.131592f / 2f, 0), Vector3.One * 3);
-
+            
+            Init_ClusterCar(new Vector3(-10, 10, 10));
             //Create_ClusterModel(new Vector3(-10f, 5, 0), new Vector3(0, 0, 0), Vector3.One * 3);
         }
 
-        public virtual void Update(float elapsedTime)
+        public virtual void Update(float deltaTime)
         {
+            KeyboardState keys = Keyboard.GetState();
+
+            if (keys.IsKeyDown(Keys.Down))
+            {
+                Motor.MaxTorque = 1;
+                Motor.Goal += deltaTime * 2;
+            }
+            else if (keys.IsKeyDown(Keys.Up))
+            {
+                Motor.MaxTorque = 1;
+                Motor.Goal -= deltaTime * 2;
+            }
+            else if (keys.IsKeyDown(Keys.Left))
+            {
+                Steer.Angle += deltaTime;
+                Steer.Angle += deltaTime;
+            }
+            else if (keys.IsKeyDown(Keys.Right))
+            {
+                Steer.Angle -= deltaTime;
+                Steer.Angle -= deltaTime;
+            }
+
             SoftBodyWorldInfo.SparseSdf.GarbageCollect();
-            World.StepSimulation(elapsedTime);
+            World.StepSimulation(deltaTime);
         }
 
         public void Draw(GraphicsDevice device, Effect effect)
@@ -288,10 +316,8 @@ namespace BulletTest
         }
 
         #region CreateObjects
-        /*void Init_ClusterCar()
+        void Init_ClusterCar(Vector3 origin)
         {
-            //SetAzi(180);
-            Vector3 origin = new Vector3(100, 80, 0);
             Quaternion orientation = Quaternion.CreateFromYawPitchRoll(-(float)Math.PI / 2, 0, 0);
             const float widthf = 8;
             const float widthr = 9;
@@ -331,11 +357,11 @@ namespace BulletTest
             //Rotationens axel är liggande(likt hjulaxeln) axeln är riktad likt x-axeln enl nedan (KAN HA FEL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
             aspecs.Axis = new Vector3(1, 0, 0);
 
-            aspecs.Control = steerControlF;
+            aspecs.Control = Steer; ;
             body.AppendAngularJoint(aspecs, wheelFL);
             body.AppendAngularJoint(aspecs, wheelFR);
 
-            aspecs.Control = motorControl;
+            aspecs.Control = Motor; ;
             body.AppendAngularJoint(aspecs, wheelRL);
             body.AppendAngularJoint(aspecs, wheelRR);
 
@@ -363,9 +389,9 @@ namespace BulletTest
                 wheelRR.Clusters[0].NodeDamping = 0.05f;
 
             //autocam=true;
-        }*/
+        }
 
-        /*SoftBody Create_ClusterBunny(Vector3 x, Vector3 a)
+        SoftBody Create_ClusterBunny(Vector3 x, Vector3 a)
         {
             SoftBody psb = SoftBodyHelpers.CreateFromTriMesh(SoftBodyWorldInfo, BunnyMesh.Vertices, BunnyMesh.Indices);
             Material pm = psb.AppendMaterial();
@@ -381,9 +407,10 @@ namespace BulletTest
             psb.Scale(new Vector3(8, 8, 8));
             psb.SetTotalMass(150, true);
             psb.GenerateClusters(1);
-            SoftWorld.AddSoftBody(psb);
+            psb.UserObject = "Soft";
+            World.AddSoftBody(psb);
             return (psb);
-        }*/
+        }
 
         SoftBody Create_ClusterTorus(Vector3 x, Vector3 a, Vector3 s)
         {

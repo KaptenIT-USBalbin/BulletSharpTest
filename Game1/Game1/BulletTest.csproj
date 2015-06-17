@@ -61,6 +61,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BulletTest.cs" />
+    <Compile Include="BunnyMesh.cs" />
+    <Compile Include="JointControllers.cs" />
     <Compile Include="MeshFactory.cs" />
     <Compile Include="Physics.cs" />
     <Compile Include="Program.cs" />
