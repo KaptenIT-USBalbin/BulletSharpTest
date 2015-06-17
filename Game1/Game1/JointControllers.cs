@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+	Classes taken from BulletSharp SoftDemo
+*/
+
+using System;
 using Microsoft.Xna.Framework;
 using BulletSharp.SoftBody;
 
