@@ -1,0 +1,2 @@
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\obj\x86\Debug\BulletTest.csprojResolveAssemblyReference.cache
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\WindowsGL\Debug\BulletTest.exe.config

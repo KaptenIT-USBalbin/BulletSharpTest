@@ -1,0 +1,14 @@
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\BulletTest.exe.config
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\obj\x64\Debug\BulletTest.csprojResolveAssemblyReference.cache
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\BulletTest.exe
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\BulletTest.pdb
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\BulletSharp.dll
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\MonoGame.Framework.dll
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\OpenTK.dll
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\obj\x64\Debug\BulletTest.exe
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\obj\x64\Debug\BulletTest.pdb
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\ball.xnb
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\Content.mgcb
+c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\neweffects.xnb
+C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletTest.exe.config
+C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.exe
