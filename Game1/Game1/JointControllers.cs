@@ -52,13 +52,18 @@ namespace BulletTest
 
     class SteerControl : AJoint.IControl
     {
+        float minAngle = -MathHelper.PiOver2;
+        float maxAngle = MathHelper.PiOver2;
+
         float angle = 0;
         protected float sign;
 
         public float Angle
         {
             get { return angle; }
-            set { angle = value; }
+
+            //Limiting the steering angle to minAngle to maxAngle
+            set { angle = MathHelper.Clamp(value, minAngle, maxAngle); }
         }
 
         /// <summary>
