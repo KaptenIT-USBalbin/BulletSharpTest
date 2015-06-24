@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/neweffects.fx</SourceFile>
-  <SourceTime>2015-06-16T13:04:40.7435721+02:00</SourceTime>
-  <DestFile>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/Content/neweffects.xnb</DestFile>
-  <DestTime>2015-06-16T13:04:46.1735533+02:00</DestTime>
+  <SourceFile>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/neweffects.fx</SourceFile>
+  <SourceTime>2015-06-24T13:55:33.6487514+02:00</SourceTime>
+  <DestFile>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/Content/neweffects.xnb</DestFile>
+  <DestTime>2015-06-24T13:56:19.5320641+02:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2015-04-29T19:14:44+02:00</ImporterTime>
   <Processor>EffectProcessor</Processor>

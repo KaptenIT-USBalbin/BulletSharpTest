@@ -25,6 +25,7 @@ float4x4 xProjection;
 float4x4 xWorld;
 float3 xLightDirection;
 float xAmbient;
+float xDiffuse;
 bool xEnableLighting;
 
 float4 xColor;
@@ -332,10 +333,11 @@ VertexToPixel MonochromaticVS(float4 inPos : POSITION, float3 inNormal : NORMAL)
 	Output.Position = mul(inPos, preWorldViewProjection);
 	Output.Color = xColor;
 
-	float3 Normal = normalize(mul(normalize(inNormal), xWorld));
+	//float3 Normal = normalize(mul(normalize(inNormal), xWorld));
+	float3 Normal = normalize(inNormal);
 		Output.LightingFactor = 1;
 	if (xEnableLighting)
-		Output.LightingFactor = dot(Normal, -xLightDirection);
+		Output.LightingFactor = xDiffuse * saturate(dot(Normal, -xLightDirection));
 
 	return Output;
 }

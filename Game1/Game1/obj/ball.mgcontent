@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/ball.fbx</SourceFile>
+  <SourceFile>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/ball.fbx</SourceFile>
   <SourceTime>2015-06-13T20:58:50.5299308+02:00</SourceTime>
-  <DestFile>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/Content/ball.xnb</DestFile>
-  <DestTime>2015-06-16T13:03:28.2003775+02:00</DestTime>
+  <DestFile>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/Content/ball.xnb</DestFile>
+  <DestTime>2015-06-24T12:36:28.1341603+02:00</DestTime>
   <Importer>FbxImporter</Importer>
   <ImporterTime>2015-04-29T19:14:44+02:00</ImporterTime>
   <Processor>ModelProcessor</Processor>

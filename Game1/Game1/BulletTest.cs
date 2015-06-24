@@ -162,7 +162,9 @@ namespace BulletTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1.0f, 0);
 
             DebugEffect.View = viewMatrix;
             
@@ -175,24 +177,28 @@ namespace BulletTest
             DebugDrawer.DrawDebugWorld(physics.World);
 
 
+            
+            
+
+            physics.Draw(device, Effect, projectionMatrix, viewMatrix);
+
             // Draw shapes
             Effect.CurrentTechnique = Effect.Techniques["Monochromatic"];
             Effect.Parameters["xEnableLighting"].SetValue(true);
-            Effect.Parameters["xAmbient"].SetValue(0.2f);
-            Effect.Parameters["xLightDirection"].SetValue(-Vector3.One);
+            Effect.Parameters["xAmbient"].SetValue(0.4f);
+            Effect.Parameters["xDiffuse"].SetValue(1.5f);
+            Effect.Parameters["xLightDirection"].SetValue(-new Vector3(1, 1, 0));
             Effect.Parameters["xView"].SetValue(viewMatrix);
             Effect.Parameters["xProjection"].SetValue(projectionMatrix);
-            
-
-            physics.Draw(device, Effect);
 
             foreach (CollisionObject colObj in physics.World.CollisionObjectArray)
             {
-                if ("Soft".Equals(colObj.UserObject))
+                if ("Soft".Equals(colObj.UserObject) || colObj.CollisionShape.ShapeType == BroadphaseNativeType.SoftBodyShape)
                     continue;
 
                 RigidBody body = RigidBody.Upcast(colObj);
                 Effect.Parameters["xWorld"].SetValue(body.MotionState.WorldTransform);
+                
 
                 if ("Ground".Equals(colObj.UserObject))
                 {
@@ -203,9 +209,9 @@ namespace BulletTest
                 }
 
                 if (colObj.ActivationState == ActivationState.ActiveTag)
-                    Effect.Parameters["xColor"].SetValue(activeColor.ToVector3());
+                    Effect.Parameters["xColor"].SetValue(activeColor.ToVector4());
                 else
-                    Effect.Parameters["xColor"].SetValue(passiveColor.ToVector3());
+                    Effect.Parameters["xColor"].SetValue(passiveColor.ToVector4());
 
                 if ("Model".Equals(colObj.UserObject))
                 {
@@ -216,8 +222,10 @@ namespace BulletTest
                     continue;
                 }
 
-                Effect.CurrentTechnique.Passes[0].Apply();
                 VertexHelper.DrawBox(device, box);
+                Effect.CurrentTechnique.Passes[0].Apply();
+                
+                
             }
 
             base.Draw(gameTime);

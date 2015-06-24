@@ -22,11 +22,10 @@ namespace BulletTest
         ConstraintSolver constraintSolver = new SequentialImpulseConstraintSolver();
 
         public static MotorControl Motor = new MotorControl();
-        SteerControl Steer = new SteerControl(1);
+        SteerAndMotorControl SteerAndMotor = new SteerAndMotorControl(1);
 
         CollisionDispatcher Dispatcher;
         BroadphaseInterface Broadphase;
-        List<CollisionShape> CollisionShapes;
         CollisionConfiguration CollisionConf;
 
 
@@ -65,6 +64,7 @@ namespace BulletTest
                 Dispatcher = Dispatcher,
                 Broadphase = Broadphase
             };
+
             SoftBodyWorldInfo.SparseSdf.Initialize();
 
             World = new SoftRigidDynamicsWorld(Dispatcher, Broadphase, Solver, CollisionConf);
@@ -77,13 +77,9 @@ namespace BulletTest
         protected void InitializeDemo()
         {
 
-            CollisionShapes = new List<CollisionShape>();
-
             // create the ground
             CollisionShape groundShape = new BoxShape(50, 1, 50);
-            CollisionShapes.Add(groundShape);
-            CollisionObject ground = LocalCreateRigidBody(0, Matrix.Identity, groundShape);
-            ground.UserObject = "Ground";
+            LocalCreateRigidBody(0, Matrix.Identity, groundShape, "Ground");
 
             // create a few dynamic rigidbodies
             float mass = 1.0f;
@@ -92,8 +88,6 @@ namespace BulletTest
             
              
             CollisionShape colShape = new BoxShape(1);
-            CollisionShapes.Add(colShape);
-            Vector3 localInertia = colShape.CalculateLocalInertia(mass);
 
             float start_x = StartPosX - ArraySizeX / 2;
             float start_y = StartPosY;
@@ -113,19 +107,7 @@ namespace BulletTest
                                 2*j + start_z
                                 )
                             );
-
-                        // using motionstate is recommended, it provides interpolation capabilities
-                        // and only synchronizes 'active' objects
-                        DefaultMotionState myMotionState = new DefaultMotionState(startTransform);
-                        RigidBodyConstructionInfo rbInfo =
-                            new RigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
-                        RigidBody body = new RigidBody(rbInfo);
-                        body.UserObject = "Box";
-                        // make it drop from a height
-                        body.Translate(new Vector3(0, 0, 0));
-
-                        World.AddRigidBody(body);
-                        CollisionShapes.Add(body.CollisionShape);
+                        LocalCreateRigidBody(mass, startTransform, colShape, "Box"); 
                     }
                 }
             }
@@ -138,7 +120,7 @@ namespace BulletTest
             for(int iteration = 0; iteration < 10; iteration++)
                 Create_ClusterTorus(new Vector3(0, 250 + iteration * 20, 0), new Vector3(0, 3.131592f / 2f, 0), Vector3.One * 3);
             
-            Init_ClusterCar(new Vector3(-10, 10, 10));
+            Init_ClusterCar(new Vector3(-25, 10, 10));
             //Create_ClusterModel(new Vector3(-10f, 5, 0), new Vector3(0, 0, 0), Vector3.One * 3);
         }
 
@@ -156,31 +138,30 @@ namespace BulletTest
                 Motor.MaxTorque = 1;
                 Motor.Goal -= deltaTime * 2;
             }
-            else if (keys.IsKeyDown(Keys.Left))
+            if (keys.IsKeyDown(Keys.Left))
             {
-                Steer.Angle += deltaTime;
-                Steer.Angle += deltaTime;
+                SteerAndMotor.Angle -= deltaTime;
+                SteerAndMotor.Angle -= deltaTime;
             }
             else if (keys.IsKeyDown(Keys.Right))
             {
-                Steer.Angle -= deltaTime;
-                Steer.Angle -= deltaTime;
+                SteerAndMotor.Angle += deltaTime;
+                SteerAndMotor.Angle += deltaTime;
             }
 
             SoftBodyWorldInfo.SparseSdf.GarbageCollect();
             World.StepSimulation(deltaTime);
         }
 
-        public void Draw(GraphicsDevice device, Effect effect)
+        public void Draw(GraphicsDevice device, Effect effect, Matrix projectionMatrix, Matrix viewMatrix)
         {
-            EffectPass pass = effect.CurrentTechnique.Passes[0];
+            
 
             for(int i = 0; i < World.NumCollisionObjects; i++)
             {
                 CollisionObject collObj = World.CollisionObjectArray[i];
-                CollisionShape collShape = CollisionShapes[i];
 
-                switch(collShape.ShapeType)
+                switch (collObj.CollisionShape.ShapeType)
                 {
                     case BroadphaseNativeType.SoftBodyShape:
                         Vector3[] positions, normals;
@@ -197,11 +178,20 @@ namespace BulletTest
 
                         //effect.CurrentTechnique = effect.Techniques["Monochromatic"];
                         //effect.Parameters["xAmbient"].SetValue(0.5f);
-                        effect.Parameters["xColor"].SetValue(Color.CornflowerBlue.ToVector3() * 2);
+                        effect.CurrentTechnique = effect.Techniques["Monochromatic"];
+                        effect.Parameters["xEnableLighting"].SetValue(true);
+                        effect.Parameters["xColor"].SetValue(Color.CornflowerBlue.ToVector4());
+                        effect.Parameters["xAmbient"].SetValue(0.4f);
+                        effect.Parameters["xDiffuse"].SetValue(1.5f);
+                        effect.Parameters["xLightDirection"].SetValue(-new Vector3(1, 1, 0));
+                        effect.Parameters["xView"].SetValue(viewMatrix);
+                        effect.Parameters["xProjection"].SetValue(projectionMatrix);
                         effect.Parameters["xWorld"].SetValue(collObj.WorldTransform);
-                        pass.Apply();
+                        EffectPass pass = effect.CurrentTechnique.Passes[0];
+                        
 
                         device.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertexCount / 3, VertexPositionNormal.VertexDeclaration);
+                        pass.Apply();
                         break;
 
 
@@ -235,11 +225,6 @@ namespace BulletTest
                 obj.Dispose();
             }
 
-            //delete collision shapes
-            foreach (CollisionShape shape in CollisionShapes)
-                shape.Dispose();
-            CollisionShapes.Clear();
-
             World.Dispose();
             Broadphase.Dispose();
             if (Dispatcher != null)
@@ -249,7 +234,7 @@ namespace BulletTest
             CollisionConf.Dispose();
         }
 
-        public RigidBody LocalCreateRigidBody(float mass, Matrix startTransform, CollisionShape shape)
+        public RigidBody LocalCreateRigidBody(float mass, Matrix startTransform, CollisionShape shape, string UserObject)
         {
             bool isDynamic = (mass != 0.0f);
 
@@ -261,6 +246,7 @@ namespace BulletTest
 
             RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, myMotionState, shape, localInertia);
             RigidBody body = new RigidBody(rbInfo);
+            body.UserObject = UserObject;
 
             World.AddRigidBody(body);
 
@@ -338,7 +324,7 @@ namespace BulletTest
             wheelFL.Cfg.DF =
                 wheelFR.Cfg.DF =
                 wheelRL.Cfg.DF =
-                wheelRR.Cfg.DF = 1;
+                wheelRR.Cfg.DF = .1f;
 
             LJoint.Specs lspecs = new LJoint.Specs();
             lspecs.Cfm = 1;
@@ -350,19 +336,20 @@ namespace BulletTest
             lspecs.Position = wheels[2]; body.AppendLinearJoint(lspecs, wheelRL);
             lspecs.Position = wheels[3]; body.AppendLinearJoint(lspecs, wheelRR);
 
-            //"rotations-servo-liknande" som ska användas för att driva/svänga hjulen
+            //"rotations-servo-liknande" som ska användas för att driva och svänga hjulen
             AJoint.Specs aspecs = new AJoint.Specs();
             aspecs.Cfm = 1;
             aspecs.Erp = 1;
-            //Rotationens axel är liggande(likt hjulaxeln) axeln är riktad likt x-axeln enl nedan (KAN HA FEL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+            //Huvud-rotationens axel är liggande(likt hjulaxeln) axeln är riktad likt x-axeln enl nedan
             aspecs.Axis = new Vector3(1, 0, 0);
 
-            aspecs.Control = Steer; ;
-            body.AppendAngularJoint(aspecs, wheelFL);
+
+            aspecs.Control = SteerAndMotor;//Binder en kontroll för "rotations-servo-liknande" - saken(denna fungerar både för styrning och drivning)
+            body.AppendAngularJoint(aspecs, wheelFL);//Fäster framhjulen m.h.a. denne
             body.AppendAngularJoint(aspecs, wheelFR);
 
-            aspecs.Control = Motor; ;
-            body.AppendAngularJoint(aspecs, wheelRL);
+            aspecs.Control = Motor;////Binder en kontroll för "rotations-servo-liknande" - saken(denna fungerar bara för drivning)
+            body.AppendAngularJoint(aspecs, wheelRL);//Fäster bakhjulen m.h.a. denne
             body.AppendAngularJoint(aspecs, wheelRR);
 
             body.Rotate(orientation);
@@ -382,11 +369,11 @@ namespace BulletTest
             wheelFL.Clusters[0].Matching =
                 wheelFR.Clusters[0].Matching =
                 wheelRL.Clusters[0].Matching =
-                wheelRR.Clusters[0].Matching = 0.05f;
+                wheelRR.Clusters[0].Matching = 0.005f;//Däckens mjukhet
             wheelFL.Clusters[0].NodeDamping =
                 wheelFR.Clusters[0].NodeDamping =
                 wheelRL.Clusters[0].NodeDamping =
-                wheelRR.Clusters[0].NodeDamping = 0.05f;
+                wheelRR.Clusters[0].NodeDamping = 0.005f;//Däckens återdämpning
 
             //autocam=true;
         }
@@ -416,7 +403,7 @@ namespace BulletTest
         {
             SoftBody psb = SoftBodyHelpers.CreateFromTriMesh(SoftBodyWorldInfo, TorusMesh.Vertices, TorusMesh.Indices);
             Material pm = psb.AppendMaterial();
-            pm.Lst = 1f;
+            pm.Lst = 0.01f;
             pm.Flags -= FMaterial.DebugDraw;
             psb.GenerateBendingConstraints(2, pm);
             psb.Cfg.PIterations = 3;
@@ -425,13 +412,12 @@ namespace BulletTest
             psb.Scale(s);
             Matrix m = Matrix.CreateFromYawPitchRoll(a.X, a.Y, a.Z) * Matrix.CreateTranslation(x);
             psb.Transform(m);
-            psb.SetTotalMass(1000, true);
+            psb.SetTotalMass(50, true);
             psb.GenerateClusters(64);
             //psb.GenerateClusters(4);
             
             psb.UserObject = "Soft";
             World.AddSoftBody(psb);
-            CollisionShapes.Add(psb.CollisionShape);
 
             return (psb);
         }
@@ -467,7 +453,6 @@ namespace BulletTest
 
                     psb.UserObject = "Soft";
                     World.AddSoftBody(psb);
-                    CollisionShapes.Add(psb.CollisionShape);
 
                 //}
         }
@@ -494,7 +479,6 @@ namespace BulletTest
             SoftBodyHelpers.ReoptimizeLinkOrder(psb);
             psb.GenerateClusters(64);
             World.AddSoftBody(psb);
-            CollisionShapes.Add(psb.CollisionShape);
 
             return (psb);
         }

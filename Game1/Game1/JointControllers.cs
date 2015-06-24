@@ -1,5 +1,5 @@
 ﻿/*
-	Classes taken from BulletSharp SoftDemo
+	Classes taken from BulletSharp SoftDemo but modified and some merged
 */
 
 using System;
@@ -19,6 +19,11 @@ namespace BulletTest
             set { goal = value; }
         }
 
+        /// <summary>
+        /// Skapar en kontroll som bara kan driva( styrningen är låst)
+        /// </summary>
+        public MotorControl() { }
+
         public float MaxTorque
         {
             get { return maxTorque; }
@@ -31,10 +36,24 @@ namespace BulletTest
         }
     }
 
+    class SteerAndMotorControl : SteerControl
+    {
+        /// <summary>
+        /// Skapar en kontroll som både kan driva samt svänga
+        /// </summary>
+        /// <param name="sign">Riktning</param>
+        public SteerAndMotorControl(float sign) : base(sign){}
+
+        public override float Speed(AJoint joint, float current)
+        {
+            return Physics.Motor.Speed(joint, current);
+        }
+    }
+
     class SteerControl : AJoint.IControl
     {
         float angle = 0;
-        float sign;
+        protected float sign;
 
         public float Angle
         {
@@ -42,6 +61,10 @@ namespace BulletTest
             set { angle = value; }
         }
 
+        /// <summary>
+        /// Skapar en kontroll som bara kan svänga( om hjul används kommer dessa att rotera fritt som i "friläge")
+        /// </summary>
+        /// <param name="sign"></param>
         public SteerControl(float sign)
         {
             this.sign = sign;
@@ -54,7 +77,7 @@ namespace BulletTest
 
         public override float Speed(AJoint joint, float current)
         {
-            return Physics.Motor.Speed(joint, current);
+            return Physics.Motor.Speed(joint, 0);
         }
     }
 }

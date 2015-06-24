@@ -4,7 +4,7 @@
   <Platform>WindowsGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/ball.fbx</File>
-    <File>C:/Users/Albin/Documents/Visual Studio 2013/Projects/Game1/Game1/neweffects.fx</File>
+    <File>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/ball.fbx</File>
+    <File>C:/Users/Albin/Documents/GitHub/BulletSharpTest/Game1/Game1/neweffects.fx</File>
   </SourceFiles>
 </SourceFileCollection>

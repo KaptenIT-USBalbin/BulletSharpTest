@@ -52,52 +52,52 @@ namespace BulletTest
             Vector3 rightNormal = new Vector3(1.0f, 0.0f, 0.0f) * size;
 
             // Front face.
-            vertices[0] = new VertexPositionNormal(topLeftFront, frontNormal);
+            vertices[2] = new VertexPositionNormal(topLeftFront, frontNormal);
             vertices[1] = new VertexPositionNormal(bottomLeftFront, frontNormal);
-            vertices[2] = new VertexPositionNormal(topRightFront, frontNormal);
-            vertices[3] = new VertexPositionNormal(bottomLeftFront, frontNormal);
+            vertices[0] = new VertexPositionNormal(topRightFront, frontNormal);
+            vertices[5] = new VertexPositionNormal(bottomLeftFront, frontNormal);
             vertices[4] = new VertexPositionNormal(bottomRightFront, frontNormal);
-            vertices[5] = new VertexPositionNormal(topRightFront, frontNormal);
+            vertices[3] = new VertexPositionNormal(topRightFront, frontNormal);
 
             // Back face.
-            vertices[6] = new VertexPositionNormal(topLeftBack, backNormal);
+            vertices[8] = new VertexPositionNormal(topLeftBack, backNormal);
             vertices[7] = new VertexPositionNormal(topRightBack, backNormal);
-            vertices[8] = new VertexPositionNormal(bottomLeftBack, backNormal);
-            vertices[9] = new VertexPositionNormal(bottomLeftBack, backNormal);
+            vertices[6] = new VertexPositionNormal(bottomLeftBack, backNormal);
+            vertices[11] = new VertexPositionNormal(bottomLeftBack, backNormal);
             vertices[10] = new VertexPositionNormal(topRightBack, backNormal);
-            vertices[11] = new VertexPositionNormal(bottomRightBack, backNormal);
+            vertices[9] = new VertexPositionNormal(bottomRightBack, backNormal);
 
             // Top face.
-            vertices[12] = new VertexPositionNormal(topLeftFront, topNormal);
+            vertices[14] = new VertexPositionNormal(topLeftFront, topNormal);
             vertices[13] = new VertexPositionNormal(topRightBack, topNormal);
-            vertices[14] = new VertexPositionNormal(topLeftBack, topNormal);
-            vertices[15] = new VertexPositionNormal(topLeftFront, topNormal);
+            vertices[12] = new VertexPositionNormal(topLeftBack, topNormal);
+            vertices[17] = new VertexPositionNormal(topLeftFront, topNormal);
             vertices[16] = new VertexPositionNormal(topRightFront, topNormal);
-            vertices[17] = new VertexPositionNormal(topRightBack, topNormal);
+            vertices[15] = new VertexPositionNormal(topRightBack, topNormal);
 
             // Bottom face. 
-            vertices[18] = new VertexPositionNormal(bottomLeftFront, bottomNormal);
+            vertices[20] = new VertexPositionNormal(bottomLeftFront, bottomNormal);
             vertices[19] = new VertexPositionNormal(bottomLeftBack, bottomNormal);
-            vertices[20] = new VertexPositionNormal(bottomRightBack, bottomNormal);
-            vertices[21] = new VertexPositionNormal(bottomLeftFront, bottomNormal);
+            vertices[18] = new VertexPositionNormal(bottomRightBack, bottomNormal);
+            vertices[23] = new VertexPositionNormal(bottomLeftFront, bottomNormal);
             vertices[22] = new VertexPositionNormal(bottomRightBack, bottomNormal);
-            vertices[23] = new VertexPositionNormal(bottomRightFront, bottomNormal);
+            vertices[21] = new VertexPositionNormal(bottomRightFront, bottomNormal);
 
             // Left face.
-            vertices[24] = new VertexPositionNormal(topLeftFront, leftNormal);
+            vertices[26] = new VertexPositionNormal(topLeftFront, leftNormal);
             vertices[25] = new VertexPositionNormal(bottomLeftBack, leftNormal);
-            vertices[26] = new VertexPositionNormal(bottomLeftFront, leftNormal);
-            vertices[27] = new VertexPositionNormal(topLeftBack, leftNormal);
+            vertices[24] = new VertexPositionNormal(bottomLeftFront, leftNormal);
+            vertices[29] = new VertexPositionNormal(topLeftBack, leftNormal);
             vertices[28] = new VertexPositionNormal(bottomLeftBack, leftNormal);
-            vertices[29] = new VertexPositionNormal(topLeftFront, leftNormal);
+            vertices[27] = new VertexPositionNormal(topLeftFront, leftNormal);
 
             // Right face. 
-            vertices[30] = new VertexPositionNormal(topRightFront, rightNormal);
+            vertices[32] = new VertexPositionNormal(topRightFront, rightNormal);
             vertices[31] = new VertexPositionNormal(bottomRightFront, rightNormal);
-            vertices[32] = new VertexPositionNormal(bottomRightBack, rightNormal);
-            vertices[33] = new VertexPositionNormal(topRightBack, rightNormal);
+            vertices[30] = new VertexPositionNormal(bottomRightBack, rightNormal);
+            vertices[35] = new VertexPositionNormal(topRightBack, rightNormal);
             vertices[34] = new VertexPositionNormal(topRightFront, rightNormal);
-            vertices[35] = new VertexPositionNormal(bottomRightBack, rightNormal);
+            vertices[33] = new VertexPositionNormal(bottomRightBack, rightNormal);
 
             VertexBuffer buffer = new VertexBuffer(device, VertexPositionNormal.VertexDeclaration,
                 vertices.Length, BufferUsage.WriteOnly);
