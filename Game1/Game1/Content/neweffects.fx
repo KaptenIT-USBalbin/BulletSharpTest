@@ -24,9 +24,9 @@ float4x4 xView;
 float4x4 xProjection;
 float4x4 xWorld;
 float3 xLightDirection;
-float xColor;
 float xAmbient;
 float xDiffuse;
+float4 xColor;
 bool xEnableLighting;
 
 bool Clipping;

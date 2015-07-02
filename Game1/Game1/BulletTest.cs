@@ -15,6 +15,8 @@ namespace BulletTest
     {
         MeshFactory _meshFactory;
 
+        Terrain Terrain = new Terrain();
+
         Color activeColor = Color.Orange;
         Color passiveColor = Color.DarkOrange;
         Color groundColor = Color.Green;
@@ -37,6 +39,15 @@ namespace BulletTest
         VertexBuffer groundBox, box;
         Model Ball;
 
+        Quaternion rotation;
+        float yaw = 0;
+        float pitch = 0;
+
+        Texture2D Texture;
+
+        Vector3 lastPos;
+        Vector3 cameraPos = new Vector3();
+
 
         public BulletTest()
         {
@@ -52,7 +63,7 @@ namespace BulletTest
         {
             DebugEffect.Projection = 
                 projectionMatrix = 
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 1.0f, 200.0f);
+                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 1.0f, 10000);
         }
 
         /// <summary>
@@ -65,9 +76,10 @@ namespace BulletTest
         {
             physics = new Physics();
 
+            Terrain.Initialize(Content, GraphicsDevice);
+
             DebugDrawer = new Physics.PhysicsDebugDraw(graphics.GraphicsDevice, DebugEffect);
-            physics.Initialize(Content, device);
-            physics.World.DebugDrawer = DebugDrawer;
+            
 
             base.Initialize();
         }
@@ -85,6 +97,7 @@ namespace BulletTest
         protected override void LoadContent()
         {
             device = graphics.GraphicsDevice;
+            
 
             #region DebugEffect
             DebugEffect = new BasicEffect(device);
@@ -98,9 +111,13 @@ namespace BulletTest
             #endregion
 
             Effect = Content.Load<Effect>("neweffects");
+            Texture = Content.Load<Texture2D>("texture");
 
             box = VertexHelper.CreateBox(device, new Vector3(1, 1, 1));
-            groundBox = VertexHelper.CreateBox(device, new Vector3(50, 1, 50));
+            groundBox = VertexHelper.CreateTexturedBox(device, new Vector3(50000, 1, 50000), 100);
+
+            physics.Initialize(Content, Effect, device);
+            physics.World.DebugDrawer = DebugDrawer;
         }
 
         /// <summary>
@@ -149,9 +166,61 @@ namespace BulletTest
                     f3KeyPressed = false;
             }
 
-            viewMatrix = Matrix.CreateLookAt(eye, target, Vector3.UnitY);
+            if (ns.IsKeyDown(Keys.A))
+                yaw -= 0.05f;
+
+            if (ns.IsKeyDown(Keys.D))
+                yaw += 0.05f;
+
+            if (ns.IsKeyDown(Keys.W))
+                pitch -= 0.05f;
+
+            if (ns.IsKeyDown(Keys.S))
+                pitch += 0.05f;
 
             physics.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+
+            Vector3 pos = new Vector3();
+
+            Vector3[] vectors;
+            if (physics.World.CollisionObjectArray[0].CollisionShape.IsSoftBody)
+            {
+                (physics.World.CollisionObjectArray[0] as SoftBody).GetVertexNormalData(out vectors);
+                pos = vectors[0];
+            }
+            else
+            {
+                pos = physics.World.CollisionObjectArray[0].WorldTransform.Translation;
+            }//pos = (physics.World.CollisionObjectArray[0] as SoftBody).Joints[0].Bodies[0].CollisionObject.WorldTransform.Translation;
+
+            /*foreach(Vector3 vector in vectors)
+                pos += vector;
+
+            pos *= 1f/(float)vectors.Length;
+            */
+            
+
+            rotation = Quaternion.CreateFromAxisAngle(new Vector3(0, 1, 0), yaw) * Quaternion.CreateFromAxisAngle(new Vector3(1,0,0), pitch);
+
+            cameraPos = new Vector3(0, 20, 200);            
+            cameraPos = Vector3.Transform(cameraPos, Matrix.CreateFromQuaternion(rotation));
+            cameraPos += pos;
+
+
+
+
+            /*float lerp = 0.025f;
+
+            cameraPos += (pos - cameraPos) * lerp;
+            cameraPos += new Vector3(0, 1, 0);
+            cameraPos = Vector3.Transform(cameraPos, Matrix.CreateFromQuaternion(rotation));
+            */
+
+            viewMatrix = Matrix.CreateLookAt(cameraPos, pos, Vector3.UnitY);
+
+            //lastPos = vectors[0];
+
 
             base.Update(gameTime);
         }
@@ -162,8 +231,7 @@ namespace BulletTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-
+            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, Color.Black, 1.0f, 0);
 
             DebugEffect.View = viewMatrix;
@@ -177,7 +245,7 @@ namespace BulletTest
             DebugDrawer.DrawDebugWorld(physics.World);
 
 
-            
+            Terrain.Draw(Effect, projectionMatrix, viewMatrix, Texture);
             
 
             physics.Draw(device, Effect, projectionMatrix, viewMatrix);
@@ -195,15 +263,28 @@ namespace BulletTest
             {
                 if ("Soft".Equals(colObj.UserObject) || colObj.CollisionShape.ShapeType == BroadphaseNativeType.SoftBodyShape)
                     continue;
+                if(colObj.UserObject != null && (colObj.UserObject as string).StartsWith("Model_"))
+                    continue;
 
                 RigidBody body = RigidBody.Upcast(colObj);
                 Effect.Parameters["xWorld"].SetValue(body.MotionState.WorldTransform);
-                
+
 
                 if ("Ground".Equals(colObj.UserObject))
                 {
-                    Effect.Parameters["xColor"].SetValue(groundColor.ToVector3());
+                    Effect.CurrentTechnique = Effect.Techniques["Textured"];
+                    Effect.Parameters["xEnableLighting"].SetValue(true);
+                    Effect.Parameters["xAmbient"].SetValue(0.4f);
+                    Effect.Parameters["xDiffuse"].SetValue(1.5f);
+                    Effect.Parameters["xLightDirection"].SetValue(-new Vector3(1, 1, 0));
+                    Effect.Parameters["xView"].SetValue(viewMatrix);
+                    Effect.Parameters["xProjection"].SetValue(projectionMatrix);
+
+                    Effect.Parameters["xTexture"].SetValue(Texture);
+
                     Effect.CurrentTechnique.Passes[0].Apply();
+
+                    
                     VertexHelper.DrawBox(device, groundBox);
                     continue;
                 }
@@ -213,14 +294,6 @@ namespace BulletTest
                 else
                     Effect.Parameters["xColor"].SetValue(passiveColor.ToVector4());
 
-                if ("Model".Equals(colObj.UserObject))
-                {
-                    Effect.Parameters["xWorld"].SetValue(Matrix.CreateScale(10) * body.MotionState.WorldTransform);
-                    Effect.Parameters["xColor"].SetValue(groundColor.ToVector3());
-                    Effect.CurrentTechnique.Passes[0].Apply();
-                    //VertexHelper.DrawBall(device, Effect, Ball);
-                    continue;
-                }
 
                 VertexHelper.DrawBox(device, box);
                 Effect.CurrentTechnique.Passes[0].Apply();

@@ -8,6 +8,20 @@ using BulletSharp.SoftBody;
 
 namespace BulletTest
 {
+    class FreeRollControl : AJoint.IControl
+    {
+
+        /// <summary>
+        /// Skapar en fritt roterande axel( styrningen är låst)
+        /// </summary>
+        public FreeRollControl() { }
+
+        public override float Speed(AJoint joint, float current)
+        {
+            return current;
+        }
+    }
+
     class MotorControl : AJoint.IControl
     {
         float goal = 0;
@@ -38,22 +52,27 @@ namespace BulletTest
 
     class SteerAndMotorControl : SteerControl
     {
+        protected MotorControl Motor;
+
         /// <summary>
         /// Skapar en kontroll som både kan driva samt svänga
         /// </summary>
         /// <param name="sign">Riktning</param>
-        public SteerAndMotorControl(float sign) : base(sign){}
+        public SteerAndMotorControl(float sign, MotorControl motor) : base(sign) 
+        {
+            Motor = motor;
+        }
 
         public override float Speed(AJoint joint, float current)
         {
-            return Physics.Motor.Speed(joint, current);
+            return Motor.Speed(joint, current);
         }
     }
 
     class SteerControl : AJoint.IControl
     {
-        float minAngle = -MathHelper.PiOver2;
-        float maxAngle = MathHelper.PiOver2;
+        float minAngle = -MathHelper.PiOver2 / 2f;
+        float maxAngle = MathHelper.PiOver2 / 2f;
 
         float angle = 0;
         protected float sign;
@@ -82,7 +101,7 @@ namespace BulletTest
 
         public override float Speed(AJoint joint, float current)
         {
-            return Physics.Motor.Speed(joint, 0);
+            return current;
         }
     }
 }

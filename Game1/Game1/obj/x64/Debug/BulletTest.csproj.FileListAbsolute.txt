@@ -10,15 +10,14 @@ c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\obj\x64\Debug\B
 c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\ball.xnb
 c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\Content.mgcb
 c:\users\albin\documents\visual studio 2013\Projects\Game1\Game1\bin\x64\Debug\Content\neweffects.xnb
-C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletTest.exe.config
-C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.exe
-C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.csprojResolveAssemblyReference.cache
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\Content\ball.xnb
-C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\Content\Content.mgcb
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\Content\neweffects.xnb
+C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletTest.exe.config
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletTest.exe
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletTest.pdb
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\BulletSharp.dll
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\MonoGame.Framework.dll
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\bin\x64\Debug\OpenTK.dll
+C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.exe
 C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.pdb
+C:\Users\Albin\Documents\GitHub\BulletSharpTest\Game1\Game1\obj\x64\Debug\BulletTest.csprojResolveAssemblyReference.cache
